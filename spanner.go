@@ -2,8 +2,9 @@ package gorm_driver_spanner
 
 import (
 	"database/sql"
-	"errors"
 	"fmt"
+	"gorm.io/gorm/logger"
+	"regexp"
 	"strings"
 
 	_ "github.com/zem12345678/go-sql-driver-spanner"
@@ -105,14 +106,18 @@ func (dialector Dialector) QuoteTo(writer clause.Writer, str string) {
 	}
 }
 
+var numericPlaceholder = regexp.MustCompile("\\@v(\\d+)")
+
 func (dialector Dialector) Explain(sql string, vars ...interface{}) string {
-	return sql
+	return logger.ExplainSQL(sql, numericPlaceholder, `'`, vars...)
 }
 
 func (dialectopr Dialector) SavePoint(tx *gorm.DB, name string) error {
-	return errors.New("spanner does not support save point.")
+	return tx.Exec("SAVEPOINT " + name).Error
+	//return errors.New("spanner does not support save point.")
 }
 
 func (dialectopr Dialector) RollbackTo(tx *gorm.DB, name string) error {
-	return errors.New("spanner does not support save point.")
+	return tx.Exec("ROLLBACK TO SAVEPOINT " + name).Error
+	//return errors.New("spanner does not support save point.")
 }
