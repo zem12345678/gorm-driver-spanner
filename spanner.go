@@ -6,12 +6,11 @@ import (
 	"fmt"
 	"strings"
 
+	_ "github.com/zem12345678/go-sql-driver-spanner"
 	"gorm.io/gorm"
 	"gorm.io/gorm/callbacks"
 	"gorm.io/gorm/clause"
 	"gorm.io/gorm/schema"
-
-	_ "github.com/yuemori/go-sql-driver-spanner"
 )
 
 type Dialector struct {
